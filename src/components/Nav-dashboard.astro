@@ -1,0 +1,177 @@
+---
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+import axios from "axios";
+import { parse } from "cookie";
+
+const cookie = parse(Astro.request.headers.get("cookie") || "");
+
+const username = await axios.get("http://localhost:3000/api/users/current", {
+  headers: { Authorization: cookie.token },
+});
+
+const name = username.data.data.name;
+
+// console.log(Astro.request.method);
+
+// if (Astro.request.method === "POST") {
+//   try {
+//     const response = await axios.delete(
+//       "http://localhost:3000/api/users/current",
+//       {
+//         headers: { Authorization: cookie.token },
+//       }
+//     );
+
+//     Astro.cookies.set("token", "");
+//     // return Astro.redirect("/login");
+//   } catch (error) {}
+// }
+---
+
+<nav class="bg-gray-800">
+  <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+    <div class="relative flex h-16 items-center justify-between">
+      <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+        <!-- Mobile menu button-->
+        <button
+          type="button"
+          class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+          aria-controls="mobile-menu"
+          aria-expanded="false"
+        >
+          <span class="absolute -inset-0.5"></span>
+          <span class="sr-only">Open main menu</span>
+          <!--
+              Icon when menu is closed.
+  
+              Menu open: "hidden", Menu closed: "block"
+            -->
+          <svg
+            class="block h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
+          </svg>
+          <!--
+              Icon when menu is open.
+  
+              Menu open: "block", Menu closed: "hidden"
+            -->
+          <svg
+            class="hidden h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            aria-hidden="true"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <div
+        class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start"
+      >
+        <div class="hidden sm:ml-6 sm:block">
+          <div class="flex space-x-4">
+            <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+            <a
+              href="/dashboard"
+              class:list={[
+                "rounded-md px-3 py-2 text-sm font-medium text-white",
+                { "bg-gray-900": href == "Dashboard" },
+              ]}
+              aria-current="page">Dashboard</a
+            >
+            <a
+              href="/dashboard/post"
+              class:list={[
+                "rounded-md px-3 py-2 text-sm font-medium text-white",
+                { "bg-gray-900": href == "Post" },
+              ]}>Post</a
+            >
+            <a
+              href="/dashboard/profil"
+              class:list={[
+                "rounded-md px-3 py-2 text-sm font-medium text-white",
+                { "bg-gray-900": href == "Profil" },
+              ]}>Profil</a
+            >
+            <p
+              class="px-3 py-2 text-sm font-medium text-white absolute right-32"
+            >
+              {name}
+            </p>
+
+            <button
+              type="submit"
+              class="text-white absolute right-0 mt-2"
+              id="logout"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                class="bi bi-box-arrow-right"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"
+                ></path>
+                <path
+                  fill-rule="evenodd"
+                  d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"
+                ></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Mobile menu, show/hide based on menu state. -->
+<div class="sm:hidden" id="mobile-menu">
+  <div class="space-y-1 px-2 pb-3 pt-2">
+    <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+    <a
+      href="#"
+      class="block rounded-md bg-gray-900 px-3 py-2 text-base font-medium text-white"
+      aria-current="page">Dashboard</a
+    >
+    <a
+      href="#"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+      >Team</a
+    >
+    <a
+      href="#"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+      >Projects</a
+    >
+    <a
+      href="#"
+      class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+      >Calendar</a
+    >
+  </div>
+</div>
+
+<script src="../util/logout.js"></script>
